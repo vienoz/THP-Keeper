@@ -5,7 +5,7 @@
 A simple implementation of some core features of the BME280 specification, that periodically measures and stores temperature, humidity and pressure. Tested on Raspberry Pi, but should run on any I2C capable device connected to a BME280.
 
 ## Requirements
-* communication is done via I2C, which has to be activates on Raspberry Pi in Configuration under `Interface Options`
+* communication is done via I2C which, on the Raspberry Pi, has to be activated in Configuration under `Interface Options`
 * correct GPIO connections (on Raspberry Pi):
   * ADDR-> GROUND
   * SCL/SCK -> GPIO4
