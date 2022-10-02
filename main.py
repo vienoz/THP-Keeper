@@ -18,7 +18,7 @@ def main():
 
     while True:
         temp, hum, pres = util.readTHP()
-        now = time.strftime("%Y-%m-%dT%H:%M", time.localtime())
+        now = time.strftime("%Y-%m-%d %H:%M", time.localtime())
         with open('measurementLog.csv', 'a') as log:
             logWriter = csv.writer(log)
             logWriter.writerow([temp, hum, pres, now])
