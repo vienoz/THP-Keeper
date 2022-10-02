@@ -42,18 +42,13 @@ class Utils:
         self.bus.write_byte_data(self.address, CTRL_MEAS, compoundSettings)
 
         self._computeCompData()
-
         self.initialized = True
-        config = self.bus.read_i2c_block_data(self.address, 0xF5, 1)
-        print(config)
+        time.sleep(4 / 1000)
 
     def _refreshSettings(self):
         compoundSettings = self.ot << 5 | self.op << 2 | self.mode
         CTRL_MEAS = 0xF4
         self.bus.write_byte_data(self.address, CTRL_MEAS, compoundSettings)
-
-        STATUS = 0xF3
-        self.bus.read_i2c_block_data(self.address, STATUS, 1)
 
     def _readCompData(self):
         CALIB00 = 0x88
@@ -106,10 +101,11 @@ class Utils:
     def _getUChar(item, index):
         return 0xFF & item[index]
 
-    def getCompensatedTHP(self):
+    def readTHP(self):
         if not self.initialized:
             return
-        values = self.readTHP()
+
+        values = self.readTHPRaw()
         ut = values[0]
         uh = values[1]
         up = values[2]
@@ -147,18 +143,19 @@ class Utils:
 
         return temperature, humidity, pressure / 100
 
-    def readTHP(self):
+    def readTHPRaw(self):
         if not self.initialized:
             return
 
         self._refreshSettings()
-        wait = 1 + (2 * self.ot) + (2 * self.op + 0.5) + (2 * self.oh * 0.5)
+        wait = 1 + (2 * self.ot) + (2 * self.op + 0.5) + (2 * self.oh + 0.5)
         time.sleep(wait / 1000)
 
         STATUS = 0xF3
         state = (self.bus.read_i2c_block_data(self.address, STATUS, 1))
 
-        while state[0] & 0x8 != 0:
+        while (state[0] >> 3) % 2 != 0:
+            state = (self.bus.read_i2c_block_data(self.address, STATUS, 1))
             time.sleep(wait / 1000)
 
         result = self.bus.read_i2c_block_data(self.address, 0xF7, 8)
