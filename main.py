@@ -1,15 +1,22 @@
-from smbus
+from smbus import smbus2
 import selftest
 from utils import Utils
 
 PORT = 1
 ADDRESS = 0x76
-bus = smbus.SMBus(PORT)
+BUS = smbus.SMBus(PORT)
 
-if __name__ == '__main__':
+
+def main():
+
+    if selftest.test(ADDRESS, BUS) == 0:
+        print("self-test success")
 
     util = Utils(ADDRESS, BUS)
     util.initialize(1, 1, 1, 1)
 
-    print("success")
+    print(util.readTHP())
 
+
+if __name__ == '__main__':
+    main()
