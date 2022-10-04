@@ -14,7 +14,7 @@ def main():
         print("self-test success")
 
     util = Utils(ADDRESS, BUS)
-    util.initialize(1, 1, 1, 1)
+    util.initializeSettings(1, 1, 1, 1)
 
     while True:
         temp, hum, pres = util.readTHP()

@@ -4,7 +4,18 @@ import smbus
 from utils import Utils
 
 
+# self-test does not cover all suggested tests cases , Chip-ID and trimming parameters are not validated
 def test(addr, bus):
+    """writes settings to device (see doc 5.4.5)
+
+    Args:
+        addr (int): Hardware address of the device
+        bus (int): specifies the i2c bus
+
+        Returns:
+            0 if test is successful, for other results see documentation 10.2
+    """
+
     print("running self-test...")
     testSetup = Utils(addr, bus)
 
@@ -15,7 +26,7 @@ def test(addr, bus):
         return "10 Communication error or wrong device found"
 
     # Bond wire test
-    testSetup.initialize(1, 1, 1, 1)
+    testSetup.initializeSettings(1, 1, 1, 1)
     testMeasurement = testSetup.readTHPRaw()
     if (testMeasurement[0] & 0xFFFFF) == 0 or (testMeasurement[0] & 0xFFFFF) == 0xFFFFF:
         return "30 Temperature bond wire failure or MEMS defect"
